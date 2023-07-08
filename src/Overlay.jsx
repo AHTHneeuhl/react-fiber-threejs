@@ -57,22 +57,11 @@ function Intro() {
 function Customizer() {
   const snap = useSnapshot(state);
 
-  const colors = [
-    "#CCCCCC",
-    "#EFBD4E",
-    "#80C670",
-    "#726DE8",
-    "#EF674E",
-    "#353934",
-    "#800080",
-  ];
-  const decals = ["react", "three2", "pmndrs"];
-
   return (
     <section key="custom">
       <div className="customizer">
         <div className="color-options">
-          {colors.map((color) => (
+          {snap.colors.map((color) => (
             <div
               key={color}
               className="circle"
@@ -83,7 +72,7 @@ function Customizer() {
         </div>
         <div className="decals">
           <div className="decals--container">
-            {decals.map((decal) => (
+            {snap.decals.map((decal) => (
               <div key={decal} className="decal">
                 <img src={decal + "_thumb.png"} alt="brand" />
               </div>
