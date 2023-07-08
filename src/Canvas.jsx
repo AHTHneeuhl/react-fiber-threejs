@@ -4,11 +4,13 @@
 import {
   AccumulativeShadows,
   Center,
-  OrbitControls,
+  Environment,
   RandomizedLight,
   useGLTF,
 } from "@react-three/drei";
-import { Canvas } from "@react-three/fiber";
+import { Canvas, useFrame } from "@react-three/fiber";
+import { easing } from "maath";
+import { useRef } from "react";
 
 function Shirt(props) {
   const { nodes, materials } = useGLTF("/shirt_baked_collapsed.glb");
@@ -55,6 +57,21 @@ function Backdrop() {
   );
 }
 
+function CameraRig({ children }) {
+  const group = useRef();
+
+  useFrame((state, delta) => {
+    easing.dampE(
+      group.current.rotation,
+      [state.pointer.y / 10, -state.pointer.x / 5, 0],
+      0.25,
+      delta
+    );
+  });
+
+  return <group ref={group}>{children}</group>;
+}
+
 const App = ({ position = [-1, 0, 2.5], fov = 25 }) => {
   return (
     <Canvas
@@ -64,11 +81,13 @@ const App = ({ position = [-1, 0, 2.5], fov = 25 }) => {
       camera={{ position, fov }}
     >
       <ambientLight intensity={0.5} />
-      <Center>
-        <Shirt />
-        <Backdrop />
-      </Center>
-      <OrbitControls />
+      <Environment files="https://dl.polyhaven.org/file/ph-assets/HDRIs/hdr/1k/potsdamer_platz_1k.hdr" />
+      <CameraRig>
+        <Center>
+          <Shirt />
+          <Backdrop />
+        </Center>
+      </CameraRig>
     </Canvas>
   );
 };
