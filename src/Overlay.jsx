@@ -83,7 +83,22 @@ function Customizer() {
             ))}
           </div>
         </div>
-        <button className="share" style={{ background: snap.selectedColor }}>
+        <button
+          className="share"
+          style={{ background: snap.selectedColor }}
+          onClick={() => {
+            const link = document.createElement("a");
+            link.setAttribute("download", "canvas.png");
+            link.setAttribute(
+              "href",
+              document
+                .querySelector("canvas")
+                .toDataURL("image/png")
+                .replace("image/png", "image/octet-stream")
+            );
+            link.click();
+          }}
+        >
           DOWNLOAD
           <AiFillCamera size="1.3em" />
         </button>

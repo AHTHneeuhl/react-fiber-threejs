@@ -107,6 +107,7 @@ export default function App({ position = [-1, 0, 2.5], fov = 25 }) {
   return (
     <Canvas
       shadows
+      gl={{ preserveDrawingBuffer: true }}
       eventSource={document.getElementById("root")}
       eventPrefix="client"
       camera={{ position, fov }}
