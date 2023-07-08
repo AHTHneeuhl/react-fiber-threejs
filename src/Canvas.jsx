@@ -4,9 +4,11 @@
 import {
   AccumulativeShadows,
   Center,
+  Decal,
   Environment,
   RandomizedLight,
   useGLTF,
+  useTexture,
 } from "@react-three/drei";
 import { Canvas, useFrame } from "@react-three/fiber";
 import { easing } from "maath";
@@ -16,6 +18,8 @@ import { state } from "./store";
 
 function Shirt(props) {
   const snap = useSnapshot(state);
+
+  const texture = useTexture(`/${snap.selectedDecal}.png`);
 
   const { nodes, materials } = useGLTF("/shirt_baked_collapsed.glb");
 
@@ -30,12 +34,18 @@ function Shirt(props) {
         receiveShadow
         geometry={nodes.T_Shirt_male.geometry}
         material={materials.lambert1}
-      />
+      >
+        <Decal
+          position={[0, 0.04, 0.15]}
+          rotation={[0, 0, 0]}
+          scale={0.15}
+          opacity={0.7}
+          map={texture}
+        />
+      </mesh>
     </group>
   );
 }
-
-useGLTF.preload("/shirt_baked_collapsed.glb");
 
 function Backdrop() {
   const shadows = useRef();
@@ -93,7 +103,7 @@ function CameraRig({ children }) {
   return <group ref={group}>{children}</group>;
 }
 
-const App = ({ position = [-1, 0, 2.5], fov = 25 }) => {
+export default function App({ position = [-1, 0, 2.5], fov = 25 }) {
   return (
     <Canvas
       shadows
@@ -111,6 +121,7 @@ const App = ({ position = [-1, 0, 2.5], fov = 25 }) => {
       </CameraRig>
     </Canvas>
   );
-};
+}
 
-export default App;
+useGLTF.preload("/shirt_baked_collapsed.glb");
+["/react.png", "/three2.png", "/pmndrs.png"].forEach(useTexture.preload);

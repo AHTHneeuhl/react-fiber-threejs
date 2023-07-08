@@ -13,6 +13,7 @@ const state = proxy({
   ],
   decals: ["react", "three2", "pmndrs"],
   selectedColor: "#EFBD4E",
+  selectedDecal: "three2",
 });
 
 export { state };
