@@ -11,9 +11,17 @@ import {
 import { Canvas, useFrame } from "@react-three/fiber";
 import { easing } from "maath";
 import { useRef } from "react";
+import { useSnapshot } from "valtio";
+import { state } from "./store";
 
 function Shirt(props) {
+  const snap = useSnapshot(state);
+
   const { nodes, materials } = useGLTF("/shirt_baked_collapsed.glb");
+
+  useFrame((state, delta) =>
+    easing.dampC(materials.lambert1.color, snap.selectedColor, 0.25, delta)
+  );
 
   return (
     <group {...props} dispose={null}>
@@ -30,8 +38,20 @@ function Shirt(props) {
 useGLTF.preload("/shirt_baked_collapsed.glb");
 
 function Backdrop() {
+  const shadows = useRef();
+
+  useFrame((state, delta) =>
+    easing.dampC(
+      shadows.current.getMesh().material.color,
+      state.selectedColor,
+      0.25,
+      delta
+    )
+  );
+
   return (
     <AccumulativeShadows
+      ref={shadows}
       temporal
       frames={60}
       alphaTest={0.85}
@@ -61,6 +81,7 @@ function CameraRig({ children }) {
   const group = useRef();
 
   useFrame((state, delta) => {
+    easing.damp3(state.camera.position, [0, 0, 2], 0.25, delta);
     easing.dampE(
       group.current.rotation,
       [state.pointer.y / 10, -state.pointer.x / 5, 0],

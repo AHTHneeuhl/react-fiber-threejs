@@ -7,8 +7,12 @@ import {
   AiFillCamera,
   AiOutlineArrowLeft,
 } from "react-icons/ai";
+import { useSnapshot } from "valtio";
+import { state } from "./store";
 
 export default function Overlay() {
+  const snap = useSnapshot(state);
+
   return (
     <div className="container">
       <header>
@@ -17,8 +21,8 @@ export default function Overlay() {
           <AiOutlineShopping size="3em" />
         </div>
       </header>
-      <Intro />
-      <Customizer />
+
+      {snap.intro ? <Intro /> : <Customizer />}
     </div>
   );
 }
@@ -37,7 +41,10 @@ function Intro() {
               customization tool. <strong>Unleash your imagination</strong> and
               define your own style.
             </p>
-            <button style={{ background: "black" }}>
+            <button
+              style={{ background: "black" }}
+              onClick={() => (state.intro = false)}
+            >
               CUSTOMIZE IT <AiOutlineHighlight size="1.3em" />
             </button>
           </div>
@@ -48,6 +55,8 @@ function Intro() {
 }
 
 function Customizer() {
+  const snap = useSnapshot(state);
+
   const colors = [
     "#CCCCCC",
     "#EFBD4E",
@@ -68,6 +77,7 @@ function Customizer() {
               key={color}
               className="circle"
               style={{ background: color }}
+              onClick={() => (state.selectedColor = color)}
             ></div>
           ))}
         </div>
@@ -80,11 +90,15 @@ function Customizer() {
             ))}
           </div>
         </div>
-        <button className="share" style={{ background: "black" }}>
+        <button className="share" style={{ background: snap.selectedColor }}>
           DOWNLOAD
           <AiFillCamera size="1.3em" />
         </button>
-        <button className="exit" style={{ background: "black" }}>
+        <button
+          className="exit"
+          style={{ background: snap.selectedColor }}
+          onClick={() => (state.intro = true)}
+        >
           GO BACK
           <AiOutlineArrowLeft size="1.3em" />
         </button>
